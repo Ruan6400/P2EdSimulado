@@ -8,8 +8,12 @@ struct NO {
 	NO* dir;
 	int altura; // usada para balanceamento
 };
-
+struct NO2{
+    int valor;
+    NO2* prox;
+};
 NO* raiz = NULL;
+NO2* primeiro = NULL;
 
 // headers
 // estrutura principal
@@ -38,6 +42,8 @@ int fatorBalanceamento(NO* no);
 int max(int a, int b);
 NO* girarDireita(NO* no);
 NO* girarEsquerda(NO* no);
+void BuscaPraOrdenar(NO* no);
+void InsereAvlLista(NO* no);
 //--------------------------
 
 
@@ -50,7 +56,7 @@ void menu()
 {
 	int op = 0;
 	while (op != 7) {
-		system("cls"); // somente no windows
+		system("clear"); // somente no windows
 		cout << "Menu Arvore";
 		cout << endl << endl;
 		cout << "1 - Inicializar Arvore \n";
@@ -82,7 +88,7 @@ void menu()
 			break;
 		}
 
-		system("pause"); // somente no windows
+		getchar(); // somente no windows
 	}
 }
 
@@ -112,6 +118,7 @@ void exibir() {
 
 void exibirEmOrdem() {
 	exibirElementosEmOrdem(raiz);
+	getchar();
 }
 
 
@@ -190,7 +197,7 @@ NO* insereArvore(NO* no, int valor)
 		return no;
 	}
 
-	// atualiza a altura do no (lembre-se que esta é função recursiva)
+	// atualiza a altura do no (lembre-se que esta ï¿½ funï¿½ï¿½o recursiva)
 
 	no->altura = max(alturaNo(no->esq), alturaNo(no->dir)) + 1;
 
@@ -283,7 +290,68 @@ void exibirElementosArvore(NO* no, int qtEspacos)
 
 void exibirElementosEmOrdem(NO* no)
 {
-	
+    if(raiz==NULL){
+        return;
+    }
+	BuscaPraOrdenar(raiz);
+	NO2* aux = primeiro;
+	while(aux!=NULL){
+	    cout<<aux->valor<<endl;
+	    aux=aux->prox;
+	}
+}
+
+void BuscaPraOrdenar(NO* no){
+    if(no==NULL){
+        return;
+    }
+    InsereAvlLista(no);
+    BuscaPraOrdenar(no->dir);
+    BuscaPraOrdenar(no->esq);
+}
+
+void InsereAvlLista(NO* no){
+    bool Ok=true;
+    NO2* aux2=primeiro;
+    NO2* novo;
+    while(aux2!=NULL){
+        if(aux2->valor==no->valor){
+            Ok=false;
+        }
+        aux2=aux2->prox;
+    }
+    if(Ok){
+        NO2* ValInserido = (NO2*)malloc(sizeof(NO2));
+        ValInserido->valor=no->valor;
+        ValInserido->prox = NULL;
+        novo = ValInserido;
+    }
+    else{return;}
+    if(primeiro==NULL){
+        primeiro=novo;
+    }
+    else{
+        NO2* aux = primeiro;
+        NO2* anterior;
+        while(aux!=NULL){
+            if(novo->valor>aux->valor){
+                novo->prox=primeiro;
+                primeiro=novo;
+                aux=NULL;
+            }
+            else{
+                anterior=aux;
+                if(aux->prox==NULL||novo->valor>aux->prox->valor){
+                    novo->prox=anterior->prox;
+                    anterior->prox=novo;
+                    aux=NULL;
+                }
+                else{
+                    aux=aux->prox;
+                }
+            }
+        }
+    }
 }
 
 void buscarElementoArvore(NO* no, int valor)
@@ -305,13 +373,3 @@ void buscarElementoArvore(NO* no, int valor)
 		buscarElementoArvore(no->dir, valor);
 	}
 }
-
-
-
-
-
-
-
-
-
-
